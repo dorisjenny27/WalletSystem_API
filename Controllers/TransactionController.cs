@@ -9,13 +9,13 @@ namespace WalletSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "noob, elite")]
     public class TransactionController(IWalletService walletService) : ControllerBase
     {
 
         private readonly IWalletService _walletService = walletService;
 
         [HttpPut("make-deposit/{id}")]
-        [Authorize(Roles = "noob, elite, ")]
         public async Task<IActionResult> MakeDeposit(string id, [FromBody] FundWalletDTO model)
         {
             // Call the service method to fund the wallet

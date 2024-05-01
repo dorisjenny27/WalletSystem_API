@@ -90,7 +90,7 @@ namespace Services
 
                     // Update user's total balance
                     totalBalance.Balance += model.Amount;
-                    await _userManager.UpdateAsync(user);
+                    await _repository.UpdateAsync(totalBalance);
 
                     response.Message = $"Wallet funded with {mainCurrency} {model.Amount} successfully for user with id: {id}";
                     response.IsSuccess = true;
@@ -107,12 +107,12 @@ namespace Services
                         var newWallet = new Wallet { UserId = user.Id, CurrencyCode = model.Currency, AccountBalance = model.Amount };
                         await _repository.AddAsync(newWallet);
 
-                        var convertedAmount = ConvertCurrency(model.Amount, model.Currency, user.MainCurrency, currencyExchangeRates);
+                     //   var convertedAmount = ConvertCurrency(model.Amount, model.Currency, user.MainCurrency, currencyExchangeRates);
 
 
-                        totalBalance.Balance += convertedAmount; // Update total balance
+                        totalBalance.Balance += model.Amount; // Update total balance
 
-                        await _userManager.UpdateAsync(user);
+                        await _repository.UpdateAsync(totalBalance);
 
                         response.Message = $"New Wallet funded with {model.Currency} {model.Amount} successfully for user with id: {id}";
                         response.IsSuccess = true;
@@ -129,7 +129,7 @@ namespace Services
                         }
 
                         totalBalance.Balance += model.Amount; // Update total balance
-                        await _userManager.UpdateAsync(user);
+                        await _repository.UpdateAsync(totalBalance);
 
                         response.Message = $"Wallet funded with {model.Currency} {model.Amount} successfully for user with id: {id}";
                         response.IsSuccess = true;
@@ -202,7 +202,8 @@ namespace Services
                     }
 
                     totalBalance.Balance -= model.Amount; // Update total balance
-                    await _userManager.UpdateAsync(user);
+
+                    await _repository.UpdateAsync(totalBalance);
 
                     response.Message = $"{mainCurrency} {model.Amount} withdrawn from wallet  successfully for user with id: {id}";
                     response.IsSuccess = true;
@@ -220,10 +221,10 @@ namespace Services
                         if (wallet == null)
                         {
                             // Convert the withdrawal amount to the main currency
-                            var convertedAmount = ConvertCurrency(model.Amount, model.Currency, user.MainCurrency, currencyExchangeRates);
+                          //  var convertedAmount = ConvertCurrency(model.Amount, model.Currency, user.MainCurrency, currencyExchangeRates);
 
                             // Reduce main currency wallet balance
-                            mainCurrencyWallet.AccountBalance -= convertedAmount;
+                            mainCurrencyWallet.AccountBalance -= model.Amount;
 
                             // Update main currency wallet balance
                             var walletBalance = await _repository.UpdateAsync(mainCurrencyWallet);
@@ -251,14 +252,14 @@ namespace Services
                             }
                         }
 
-                        var convertedTotalAmount = ConvertCurrency(model.Amount, model.Currency, user.MainCurrency, currencyExchangeRates);
+                       // var convertedTotalAmount = ConvertCurrency(model.Amount, model.Currency, user.MainCurrency, currencyExchangeRates);
 
 
                         // Reduce total balance of the user
-                        totalBalance.Balance -= convertedTotalAmount; // Update total balance
+                        totalBalance.Balance -= model.Amount; // Update total balance
 
                         // Update user's total balance
-                        await _userManager.UpdateAsync(user);
+                        await _repository.UpdateAsync(totalBalance);
 
                         // Set response message
                         response.Message = $"{(wallet == null ? user.MainCurrency : model.Currency)} {model.Amount} withdrawn from wallet successfully for user with id: {id}";

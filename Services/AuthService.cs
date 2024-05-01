@@ -107,7 +107,9 @@ namespace WalletSystem.Services
             {
                 Email = model.Email,
                 UserName = model.Email,
-//                PhoneNumber = model.PhoneNumber,
+                MainCurrency = model.CurrencyType,
+                UserType = model.UserType
+ 
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);

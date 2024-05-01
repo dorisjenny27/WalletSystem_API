@@ -9,12 +9,13 @@ namespace WalletSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
+
     public class AdminController(IUserService userService) : ControllerBase
     {
         private readonly IUserService _userService = userService;
 
         [HttpPut("promote-or-demote-user/{userId}")]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> PromoteOrDemoteUser(string userId, [FromBody] ChangeUserRoleDTO model)
         {
             var response = await _userService.PromoteOrDemoteUser(userId, model.NewRole);
@@ -23,7 +24,6 @@ namespace WalletSystem.Controllers
         }
 
         [HttpPut("fund-user-wallet/{id}")]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> FundUserWallet(string id, [FromBody] FundWalletDTO model)
         {
             var response = await _userService.FundUserWallet(id, model);
